@@ -1,0 +1,58 @@
+{
+  "info": {
+    "name": "Crypto Crash API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Player",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"alice\",\n  \"wallets\": { \"BTC\": 0.01, \"ETH\": 0.5 }\n}"
+        },
+        "url": { "raw": "http://localhost:5000/api/player", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "player"] }
+      }
+    },
+    {
+      "name": "Get Wallet",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/wallet/{{playerId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "wallet", "{{playerId}}"] }
+      }
+    },
+    {
+      "name": "Place Bet",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"playerId\": \"{{playerId}}\",\n  \"usdAmount\": 10,\n  \"currency\": \"BTC\"\n}"
+        },
+        "url": { "raw": "http://localhost:5000/api/bet", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "bet"] }
+      }
+    },
+    {
+      "name": "Cashout",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"playerId\": \"{{playerId}}\"\n}"
+        },
+        "url": { "raw": "http://localhost:5000/api/cashout", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "cashout"] }
+      }
+    },
+    {
+      "name": "Get Round History",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/rounds", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "rounds"] }
+      }
+    }
+  ]
+} 

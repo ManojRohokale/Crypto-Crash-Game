@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Crash Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <h1>Crypto Crash Game</h1>
+      <section class="player-section">
+        <label for="playerId">Player ID:</label>
+        <input id="playerId" type="text" placeholder="Enter playerId" />
+        <button id="connectBtn">Connect</button>
+      </section>
+      <section class="balance-section" id="balanceSection" style="display:none;">
+        <div><b>Balance:</b> <span id="btcBalance">BTC: -</span> | <span id="ethBalance">ETH: -</span></div>
+        <div id="usdBalance"></div>
+      </section>
+      <section class="round-section">
+        <div class="round-status" id="roundStatus">Not connected.</div>
+        <div class="multiplier" id="multiplierDisplay">-</div>
+        <div class="betting-timer" id="bettingTimer"></div>
+      </section>
+    </div>
+    <div class="right-panel">
+      <section class="bet-section" id="controls" style="display:none;">
+        <form class="bet-form" id="betForm">
+          <input id="betAmount" type="number" min="1" step="any" placeholder="USD Amount" required />
+          <select id="betCurrency">
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+          </select>
+          <button type="submit">Place Bet</button>
+        </form>
+        <button id="cashoutBtn" disabled>Cashout</button>
+      </section>
+      <section class="log-section">
+        <div id="log"></div>
+      </section>
+    </div>
+  </div>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html> 
