@@ -4,45 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crypto Crash Game</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="left-panel">
-      <h1>Crypto Crash Game</h1>
-      <section class="player-section">
-        <label for="playerId">Player ID:</label>
-        <input id="playerId" type="text" placeholder="Enter playerId" />
-        <button id="connectBtn">Connect</button>
-      </section>
-      <section class="balance-section" id="balanceSection" style="display:none;">
-        <div><b>Balance:</b> <span id="btcBalance">BTC: -</span> | <span id="ethBalance">ETH: -</span></div>
-        <div id="usdBalance"></div>
-      </section>
-      <section class="round-section">
-        <div class="round-status" id="roundStatus">Not connected.</div>
-        <div class="multiplier" id="multiplierDisplay">-</div>
-        <div class="betting-timer" id="bettingTimer"></div>
-      </section>
-    </div>
-    <div class="right-panel">
-      <section class="bet-section" id="controls" style="display:none;">
-        <form class="bet-form" id="betForm">
-          <input id="betAmount" type="number" min="1" step="any" placeholder="USD Amount" required />
-          <select id="betCurrency">
-            <option value="BTC">BTC</option>
-            <option value="ETH">ETH</option>
-          </select>
-          <button type="submit">Place Bet</button>
-        </form>
-        <button id="cashoutBtn" disabled>Cashout</button>
-      </section>
-      <section class="log-section">
-        <div id="log"></div>
-      </section>
+  <div class="container-fluid">
+    <div class="main-container">
+      <div class="row">
+        <div class="col-lg-6 left-panel">
+          <h1 class="game-title">Crypto Crash Game</h1>
+          
+          <!-- Player Connection Section -->
+          <div class="custom-card">
+            <h5 class="card-title mb-3">Player Connection</h5>
+            <div class="mb-3">
+              <label for="playerId" class="form-label fw-medium">Player ID:</label>
+              <div class="input-group">
+                <input id="playerId" type="text" class="form-control" placeholder="Enter playerId" />
+                <button id="connectBtn" class="btn btn-primary">Connect</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Balance Section -->
+          <div class="custom-card balance-section d-none" id="balanceSection">
+            <h5 class="card-title mb-3">Player Balance</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <strong>Balance:</strong> 
+                <span id="btcBalance">BTC: -</span> | 
+                <span id="ethBalance">ETH: -</span>
+              </div>
+              <div id="usdBalance" class="balance-usd"></div>
+            </div>
+          </div>
+          
+          <!-- Round Status Section -->
+          <div class="custom-card">
+            <h5 class="card-title mb-3">Round Status</h5>
+            <div class="round-status" id="roundStatus">Not connected.</div>
+            <div class="multiplier-display" id="multiplierDisplay">-</div>
+            <div class="betting-timer" id="bettingTimer"></div>
+          </div>
+        </div>
+        
+        <div class="col-lg-6 right-panel">
+          <!-- Betting Controls Section -->
+          <div class="custom-card d-none" id="controls">
+            <h5 class="card-title mb-3">Betting Controls</h5>
+            <form id="betForm" class="mb-3">
+              <div class="row g-2 mb-3">
+                <div class="col-md-5">
+                  <input id="betAmount" type="number" min="1" step="any" class="form-control" placeholder="USD Amount" required />
+                </div>
+                <div class="col-md-4">
+                  <select id="betCurrency" class="form-select">
+                    <option value="BTC">BTC</option>
+                    <option value="ETH">ETH</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <button type="submit" class="btn btn-primary w-100">Place Bet</button>
+                </div>
+              </div>
+            </form>
+            <div class="text-center">
+              <button id="cashoutBtn" class="btn btn-warning" disabled>Cashout</button>
+            </div>
+          </div>
+          
+          <!-- Game Log Section -->
+          <div class="custom-card">
+            <h5 class="card-title mb-3">Game Log</h5>
+            <div id="log" class="log-container"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script src="main.js"></script>
 </body>
-</html> 
+</html>
