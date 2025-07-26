@@ -1,7 +1,7 @@
 // Configuration for different environments
 const API_BASE_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000' 
-  : 'https://your-backend-name.onrender.com'; // Replace with your actual Render URL
+  : 'https://crypto-crash-game-maoz.onrender.com'; // Updated with your actual Render URL
 
 let socket;
 let currentMultiplier = '-';

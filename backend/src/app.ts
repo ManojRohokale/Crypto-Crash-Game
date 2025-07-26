@@ -13,7 +13,7 @@ const app = express();
 const corsOptions: CorsOptions = {
   origin: [
     'http://localhost:3000', // for local development
-    'https://your-frontend-name.netlify.app', // Replace with your actual Netlify URL
+    'https://candid-squirrel-ba9a5d.netlify.app', // Your actual Netlify URL
     process.env.FRONTEND_URL || '' // Provide fallback to avoid undefined
   ].filter((url): url is string => Boolean(url)), // Type-safe filter
   credentials: true,
