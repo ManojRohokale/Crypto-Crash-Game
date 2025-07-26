@@ -36,10 +36,9 @@ app.post('/api/cashout', walletController.cashOut);
 app.get('/api/rounds', roundController.getRoundHistory);
 app.post('/api/player', playerController.createPlayer);
 
-// 404 handler
-app.use('*', (req, res) => {
+// 404 handler - FIXED: Removed problematic '*' pattern
+app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
 export default app;
-
