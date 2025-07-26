@@ -13,13 +13,20 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/crypto
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
+    origin: [
+      'http://localhost:3000', // for local development
+      'https://your-frontend-name.netlify.app', // Replace with your actual Netlify URL
+      process.env.FRONTEND_URL || '' // Provide fallback to avoid undefined
+    ].filter((url): url is string => Boolean(url)), // Type-safe filter
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
 // WebSocket: handle cashout requests from clients
 io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
+  
   socket.on('cashout', ({ playerId }) => {
     try {
       const result = cashOut(playerId);
@@ -28,17 +35,24 @@ io.on('connection', (socket) => {
       socket.emit('cashout_error', { error: err.message });
     }
   });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
 });
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
+    console.log('Connected to MongoDB');
     server.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
       startGameEngine();
     });
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err);
+    process.exit(1); // Exit on database connection failure
   });
 
-export { io }; 
+export { io };

@@ -1,3 +1,8 @@
+// Configuration for different environments
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000' 
+  : 'https://your-backend-name.onrender.com'; // Replace with your actual Render URL
+
 let socket;
 let currentMultiplier = '-';
 let roundActive = false;
@@ -21,7 +26,7 @@ function log(msg) {
 }
 
 function fetchBalance(playerId) {
-  fetch(`http://localhost:5000/api/wallet/${playerId}`)
+  fetch(`${API_BASE_URL}/api/wallet/${playerId}`)
     .then(res => res.json())
     .then(data => {
       const balanceSection = document.getElementById('balanceSection');
@@ -85,7 +90,7 @@ function startBettingTimer(startTime) {
 function connectWS() {
   const playerId = document.getElementById('playerId').value.trim();
   if (!playerId) return alert('Enter playerId');
-  socket = io('http://localhost:5000');
+  socket = io(API_BASE_URL);
   log('<b>Connecting as</b> ' + playerId + '...');
   document.getElementById('controls').classList.remove('d-none');
   document.getElementById('roundStatus').textContent = 'Waiting for round...';
@@ -167,7 +172,7 @@ function placeBet(e) {
   const currency = document.getElementById('betCurrency').value;
   if (!playerId || !usdAmount || !currency) return alert('Fill all bet fields');
   
-  fetch('http://localhost:5000/api/bet', {
+  fetch(`${API_BASE_URL}/api/bet`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ playerId, usdAmount, currency })
