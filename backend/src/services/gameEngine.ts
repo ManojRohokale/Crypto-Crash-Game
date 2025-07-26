@@ -13,11 +13,13 @@ interface GameState {
   bets: IBet[];
   roundNumber: number;
   priceAtBet: Record<string, number>;
+  bettingPhaseActive: boolean;
 }
 
 const GROWTH_FACTOR = 0.00006; // Exponential growth factor for multiplier
 const ROUND_INTERVAL = 20000; // 20 seconds between rounds (easier testing)
 const MULTIPLIER_UPDATE_INTERVAL = 200; // 200ms
+const BETTING_PHASE_DURATION = 8000; // 8 seconds for betting phase
 
 let state: GameState = {
   currentRound: null,
@@ -30,6 +32,7 @@ let state: GameState = {
   bets: [],
   roundNumber: 1,
   priceAtBet: {},
+  bettingPhaseActive: false,
 };
 
 function generateSeed() {
@@ -53,6 +56,7 @@ function getMultiplier(timeElapsed: number) {
 
 let roundTimer: NodeJS.Timeout | null = null;
 let multiplierTimer: NodeJS.Timeout | null = null;
+let bettingTimer: NodeJS.Timeout | null = null;
 
 export function startGameEngine() {
   startNewRound();
@@ -67,33 +71,64 @@ function startNewRound() {
   state.priceHash = crypto.createHash('sha256').update(state.priceSeed + state.roundNumber).digest('hex');
   state.crashPoint = getCrashPoint(state.priceSeed, state.roundNumber);
   state.priceAtBet = {};
+  state.bettingPhaseActive = true;
 
+  // Emit round start with betting phase info
   io.emit('round_start', {
     roundNumber: state.roundNumber,
     hash: state.priceHash,
     crashPoint: null,
     startTime: state.startTime,
+    bettingPhase: true,
+    bettingDuration: BETTING_PHASE_DURATION,
   });
 
-  multiplierTimer = setInterval(() => {
-    if (state.isCrashed) return;
-    const elapsed = (Date.now() - state.startTime) / 1000;
-    state.multiplier = getMultiplier(elapsed);
-    io.emit('multiplier_update', { multiplier: state.multiplier });
-    if (state.multiplier >= state.crashPoint) {
-      crashRound();
+  // Start betting phase countdown
+  let bettingTimeLeft = BETTING_PHASE_DURATION;
+  const bettingCountdown = setInterval(() => {
+    bettingTimeLeft -= 1000;
+    io.emit('betting_countdown', { timeLeft: bettingTimeLeft });
+    
+    if (bettingTimeLeft <= 0) {
+      clearInterval(bettingCountdown);
     }
-  }, MULTIPLIER_UPDATE_INTERVAL);
+  }, 1000);
+
+  // End betting phase and start multiplier growth
+  bettingTimer = setTimeout(() => {
+    state.bettingPhaseActive = false;
+    io.emit('betting_closed');
+    
+    // Start multiplier updates
+    multiplierTimer = setInterval(() => {
+      if (state.isCrashed) return;
+      
+      const elapsed = (Date.now() - state.startTime - BETTING_PHASE_DURATION) / 1000;
+      state.multiplier = getMultiplier(elapsed);
+      
+      io.emit('multiplier_update', { multiplier: state.multiplier });
+      
+      if (state.multiplier >= state.crashPoint) {
+        crashRound();
+      }
+    }, MULTIPLIER_UPDATE_INTERVAL);
+    
+  }, BETTING_PHASE_DURATION);
 }
 
 function crashRound() {
   state.isCrashed = true;
+  state.bettingPhaseActive = false;
+  
   if (multiplierTimer) clearInterval(multiplierTimer);
+  if (bettingTimer) clearTimeout(bettingTimer);
+  
   io.emit('round_crash', {
     roundNumber: state.roundNumber,
     crashPoint: state.crashPoint,
     bets: state.bets,
   });
+  
   // Save round to DB
   const round = new Round({
     roundNumber: state.roundNumber,
@@ -105,6 +140,7 @@ function crashRound() {
     endedAt: new Date(),
   });
   round.save();
+  
   // Start next round after interval
   roundTimer = setTimeout(() => {
     state.roundNumber++;
@@ -113,22 +149,58 @@ function crashRound() {
 }
 
 export function placeBet(bet: IBet, priceAtBet: number) {
-  if (state.isCrashed || state.multiplier > 1.01) throw new Error('Betting closed');
+  // Allow betting only during betting phase
+  if (state.isCrashed) {
+    throw new Error('Round has crashed');
+  }
+  
+  if (!state.bettingPhaseActive) {
+    throw new Error('Betting closed');
+  }
+  
+  // Double check timing
+  const timeSinceStart = Date.now() - state.startTime;
+  if (timeSinceStart > BETTING_PHASE_DURATION) {
+    state.bettingPhaseActive = false;
+    throw new Error('Betting closed');
+  }
+  
   state.bets.push(bet);
   state.priceAtBet[bet.playerId] = priceAtBet;
+  
+  // Emit bet placed event
+  io.emit('bet_placed', {
+    playerId: bet.playerId,
+    amount: bet.usdAmount,
+    currency: bet.currency,
+  });
 }
 
 export function cashOut(playerId: string) {
   if (state.isCrashed) throw new Error('Round crashed');
+  if (state.bettingPhaseActive) throw new Error('Cannot cash out during betting phase');
+  
   const bet = state.bets.find(b => b.playerId === playerId && !b.cashedOut);
   if (!bet) throw new Error('No active bet');
+  
   bet.cashedOut = true;
   bet.cashoutMultiplier = state.multiplier;
   bet.cashoutAmount = bet.cryptoAmount * state.multiplier;
+  
   io.emit('player_cashout', {
     playerId,
     cashoutMultiplier: bet.cashoutMultiplier,
     cashoutAmount: bet.cashoutAmount,
   });
+  
   return { ...bet, priceAtBet: state.priceAtBet[playerId] };
-} 
+}
+
+// Export current game state for debugging
+export function getGameState() {
+  return {
+    ...state,
+    timeSinceStart: Date.now() - state.startTime,
+    bettingTimeLeft: Math.max(0, BETTING_PHASE_DURATION - (Date.now() - state.startTime)),
+  };
+}
