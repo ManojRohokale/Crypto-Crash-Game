@@ -24,6 +24,14 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Add debug logging middleware BEFORE routes
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+  next();
+});
+
 // Health check endpoint (useful for Render)
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
@@ -38,6 +46,7 @@ app.post('/api/player', playerController.createPlayer);
 
 // 404 handler - FIXED: Removed problematic '*' pattern
 app.use((req, res) => {
+  console.log(`404 - Route not found: ${req.method} ${req.path}`);
   res.status(404).json({ error: 'Route not found' });
 });
 

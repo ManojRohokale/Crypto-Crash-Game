@@ -1,6 +1,7 @@
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f4f6fb;
+  background: 
+#f4f6fb;
   color: #222;
 }
 
@@ -15,7 +16,8 @@ body {
 }
 
 .custom-card {
-  background: #f8fbff;
+  background: 
+#f8fbff;
   border-radius: 14px;
   box-shadow: 0 2px 12px rgba(45,140,255,0.06);
   padding: 1.5rem;
@@ -36,7 +38,8 @@ body {
 }
 
 .left-panel {
-  border-right: 1.5px solid #e0e0e0;
+  border-right: 1.5px solid 
+#e0e0e0;
   padding-right: 2rem;
 }
 
@@ -45,8 +48,10 @@ body {
 }
 
 .btn-primary {
-  background: #2d8cff;
-  border-color: #2d8cff;
+  background: 
+#2d8cff;
+  border-color: 
+#2d8cff;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(45,140,255,0.08);
   border-radius: 8px;
@@ -55,19 +60,25 @@ body {
 }
 
 .btn-primary:hover {
-  background: #176de6;
-  border-color: #176de6;
+  background: 
+#176de6;
+  border-color: 
+#176de6;
   box-shadow: 0 4px 16px rgba(45,140,255,0.13);
 }
 
 .btn-primary:disabled {
-  background: #b3d1ff;
-  border-color: #b3d1ff;
+  background: 
+#b3d1ff;
+  border-color: 
+#b3d1ff;
 }
 
 .btn-warning {
-  background: #ff6b2d;
-  border-color: #ff6b2d;
+  background: 
+#ff6b2d;
+  border-color: 
+#ff6b2d;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(255,107,45,0.08);
   border-radius: 8px;
@@ -76,8 +87,10 @@ body {
 }
 
 .btn-warning:hover {
-  background: #e65a17;
-  border-color: #e65a17;
+  background: 
+#e65a17;
+  border-color: 
+#e65a17;
   box-shadow: 0 4px 16px rgba(255,107,45,0.13);
 }
 
@@ -89,14 +102,18 @@ body {
 }
 
 .form-control:focus, .form-select:focus {
-  border-color: #86b7fe;
+  border-color: 
+#86b7fe;
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(45, 140, 255, 0.25);
 }
 
 .log-container {
-  background: linear-gradient(135deg, #f8fbff 60%, #eaf3ff 100%);
-  border: 1.5px solid #d0d0d0;
+  background: linear-gradient(135deg, 
+#f8fbff 60%, 
+#eaf3ff 100%);
+  border: 1.5px solid 
+#d0d0d0;
   border-radius: 12px;
   padding: 1.5rem;
   height: 400px;
@@ -110,7 +127,8 @@ body {
 
 .log-entry {
   animation: fadeInLog 0.7s;
-  background: #eaf3ff;
+  background: 
+#eaf3ff;
   border-radius: 6px;
   margin-bottom: 0.3rem;
   padding: 0.2rem 0.5rem;
@@ -125,7 +143,8 @@ body {
 .multiplier-display {
   font-size: 3.5rem;
   font-weight: bold;
-  color: #2d8cff;
+  color: 
+#2d8cff;
   text-align: center;
   margin: 0.5rem 0 1rem 0;
   letter-spacing: 1px;
@@ -134,9 +153,12 @@ body {
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.8); color: #176de6; }
-  70% { transform: scale(1.1); color: #2d8cff; }
-  100% { transform: scale(1); color: #2d8cff; }
+  0% { transform: scale(0.8); color: 
+#176de6; }
+  70% { transform: scale(1.1); color: 
+#2d8cff; }
+  100% { transform: scale(1); color: 
+#2d8cff; }
 }
 
 .round-status, .betting-timer {
@@ -147,13 +169,15 @@ body {
 }
 
 .balance-section {
-  background: #f6faff !important;
+  background: 
+#f6faff !important;
   font-size: 1.18rem;
 }
 
 .balance-usd {
   font-weight: 600;
-  color: #2d8cff;
+  color: 
+#2d8cff;
 }
 
 @media (max-width: 768px) {
@@ -162,17 +186,17 @@ body {
     padding: 1rem;
     min-height: unset;
   }
-  
+
   .left-panel, .right-panel {
     padding: 0;
     border: none;
   }
-  
+
   .game-title {
     text-align: center;
     font-size: 2rem;
   }
-  
+
   .log-container {
     height: 200px;
     padding: 0.7rem;
